@@ -24,8 +24,14 @@ module ActiveModel
         @embed_in_root_key = options.fetch(:embed_in_root_key) { CONFIG.embed_in_root_key }
         @embed_namespace = options.fetch(:embed_namespace) { CONFIG.embed_namespace }
 
-        serializer = @options[:serializer]
-        @serializer_from_options = serializer.is_a?(String) ? serializer.constantize : serializer
+        @serializer = options[:serializer]
+        @serializer_from_options = if @serializer.is_a?(Hash)
+          nil
+        elsif @serializer.is_a?(String)
+          @serializer.constantize
+        else
+          @serializer
+        end
       end
 
       attr_reader :name, :embed_ids, :embed_objects, :polymorphic
@@ -43,7 +49,13 @@ module ActiveModel
       end
 
       def serializer_from_object(object, options = {})
-        Serializer.serializer_for(object, options)
+        if @serializer.is_a?(Hash) && polymorphic?
+          polymorphic_object_key = object.class.name.underscore.to_sym
+          return nil unless @serializer.has_key?(polymorphic_object_key)
+          @serializer[polymorphic_object_key]
+        else
+          Serializer.serializer_for(object, options)
+        end
       end
 
       def default_serializer

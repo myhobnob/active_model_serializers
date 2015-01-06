@@ -805,6 +805,29 @@ end
 }
 ```
 
+You can also define serializers for a polymorphic relationship like so:
+
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title
+  has_many :attachments, polymorphic: true, each_serializer: { video: SpecialVideoSerializer, audio: AudioSummarySerializer }
+end
+
+```
+
+Or, for `has_one` relationships:
+
+```ruby
+class PostSerializer < ActiveModel::Serializer
+  attributes :id, :title
+  has_one :attachment, polymorphic: true, serializer: { video: SpecialVideoSerializer, audio: AudioSummarySerializer }
+end
+```
+
+In this case, if the `attachment` is a Video object, instead of using the
+standard VideoSerializer, the SpecialVideoSerializer will be used. Any other
+objects not defined by the hash will use the default serializers.
 
 ## Customizing Scope
 

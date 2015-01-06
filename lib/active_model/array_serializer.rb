@@ -18,12 +18,13 @@ module ActiveModel
       @polymorphic   = options.fetch(:polymorphic, false)
       @meta_key        = options[:meta_key] || :meta
       @meta            = options[@meta_key]
-      @each_serializer = options[:each_serializer]
       @resource_name   = options[:resource_name]
       @only            = options[:only] ? Array(options[:only]) : nil
       @except          = options[:except] ? Array(options[:except]) : nil
       @namespace       = options[:namespace]
       @key_format      = options[:key_format] || options[:each_serializer].try(:key_format)
+      @each_serializer = options[:each_serializer]
+      @each_serializer_from_options = @each_serializer.is_a?(Hash) ? nil : @each_serializer
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
 
@@ -34,7 +35,7 @@ module ActiveModel
     end
 
     def serializer_for(item)
-      serializer_class = @each_serializer || Serializer.serializer_for(item, namespace: @namespace) || DefaultSerializer
+      serializer_class = @each_serializer_from_options || Serializer.serializer_for(item, namespace: @namespace) || DefaultSerializer
       serializer_class.new(item, scope: scope, key_format: key_format, only: @only, except: @except, polymorphic: @polymorphic, namespace: @namespace)
     end
 

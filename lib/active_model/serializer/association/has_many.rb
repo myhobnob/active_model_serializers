@@ -1,3 +1,5 @@
+require 'active_model/polymorphic_array_serializer'
+
 module ActiveModel
   class Serializer
     class Association
@@ -13,7 +15,7 @@ module ActiveModel
 
         def serializer_class(object, _)
           if use_array_serializer?
-            ArraySerializer
+            polymorphic? ? PolymorphicArraySerializer : ArraySerializer
           else
             serializer_from_options
           end
