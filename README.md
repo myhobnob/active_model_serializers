@@ -1,6 +1,21 @@
 [![Build Status](https://api.travis-ci.org/rails-api/active_model_serializers.png?branch=0-9-stable)](https://travis-ci.org/rails-api/active_model_serializers)
 [![Code Climate](https://codeclimate.com/github/rails-api/active_model_serializers.png)](https://codeclimate.com/github/rails-api/active_model_serializers)
 
+## This Fork
+
+Adds polymorphic support for serializers
+
+Allows the the passed in `context` option to be passed through to a `has_many`
+association (by modifying the `ArraySerializer`). This can be used by
+specifying `:context` as a key when invoking the serializer, either via `.new`
+or via `respond_with`/`to_json`.
+
+Context example:
+
+    respond_with(:api, :v2, @event, serializer: ::API::V2::EventSerializer, context: { render_guest: true }) do |format|
+      # Render code
+    end
+
 # ActiveModel::Serializers
 
 ## Purpose

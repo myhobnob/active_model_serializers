@@ -230,7 +230,7 @@ end
       prefix    = association.options[:prefix]
       namespace = association.options[:namespace] || @namespace || self.namespace
 
-      { scope: scope }.tap do |opts|
+      { scope: scope, context: context }.tap do |opts|
         opts[:namespace] = namespace if namespace
         opts[:prefix]    = prefix    if prefix
       end

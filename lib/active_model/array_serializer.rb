@@ -25,6 +25,7 @@ module ActiveModel
       @key_format      = options[:key_format] || options[:each_serializer].try(:key_format)
       @each_serializer = options[:each_serializer]
       @each_serializer_from_options = @each_serializer.is_a?(Hash) ? nil : @each_serializer
+      @context         = options[:context]
     end
     attr_accessor :object, :scope, :root, :meta_key, :meta, :key_format
 
@@ -36,7 +37,7 @@ module ActiveModel
 
     def serializer_for(item)
       serializer_class = @each_serializer_from_options || Serializer.serializer_for(item, namespace: @namespace) || DefaultSerializer
-      serializer_class.new(item, scope: scope, key_format: key_format, only: @only, except: @except, polymorphic: @polymorphic, namespace: @namespace)
+      serializer_class.new(item, scope: scope, key_format: key_format, only: @only, except: @except, polymorphic: @polymorphic, namespace: @namespace, context: @context)
     end
 
     def serializable_object(options={})
